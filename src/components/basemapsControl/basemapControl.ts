@@ -1,25 +1,16 @@
 import L from 'leaflet'
-import { baseMaps, baseMapsThumb } from '../../constants/baseMaps'
-import { type CustomControlOptions } from '../../types/mapControl'
+import { baseMaps, baseMapsThumb } from '../../constants/basemaps'
 import './styles.css'
 
 const createElement = (tag: string, className?: string) => L.DomUtil.create(tag, className)
 
 export const basemapsControl = L.Control.extend({
-  options: {
-    theme: 'light',
-  } as CustomControlOptions,
-
   onAdd(mapInstance: L.Map) {
     const container = createElement('div', 'custom-control')
     container.innerHTML = '<span class="icon-earth">🌍</span>'
 
     const menu = createElement('div', 'layer-menu')
-    console.log(this.options.theme)
-    if (this.options.theme === 'dark') {
-      container.classList.add('dark-theme')
-      menu.classList.add('dark-theme')
-    }
+
     Object.keys(baseMaps).forEach((key) => {
       const thumb = baseMapsThumb.find((item) => item.id === key)
       if (thumb) {

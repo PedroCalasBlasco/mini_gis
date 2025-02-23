@@ -9,7 +9,8 @@ html{
       filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
     }
     .leaflet-control-zoom-in,
-    .leaflet-control-zoom-out{
+    .leaflet-control-zoom-out,
+    .custom-control{
       background: #333 !important;
       color: white !important;
     }
