@@ -14,6 +14,8 @@
   import { useStorage } from '@vueuse/core'
   import { createLeafletControl } from '@/utils/leafletControl'
   import GeocodingControl from '../components/geocodingControl/GeocodingControl.vue'
+  import GoToExtentButton from '@/components/GoToExtentButton/GoToExtentButton.vue'
+  import GoToActualPositionButton from '@/components/GoToActualPositionButton/GoToActualPositionButton.vue'
 
   const theme = useStorage<Theme>('theme', 'light')
 
@@ -36,8 +38,21 @@
     const geoControl = new (createLeafletControl('custom-control', GeocodingControl, map))({
       position: 'topright',
     })
-
     map.addControl(geoControl)
+
+    const goToExtentButton = new (createLeafletControl('custom-control', GoToExtentButton, map))({
+      position: 'topright',
+    })
+    map.addControl(goToExtentButton)
+
+    const goToActualPosition = new (createLeafletControl(
+      'custom-control',
+      GoToActualPositionButton,
+      map
+    ))({
+      position: 'topright',
+    })
+    map.addControl(goToActualPosition)
   })
 </script>
 
