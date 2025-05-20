@@ -5,6 +5,7 @@
 <script setup lang="ts">
   import { onMounted, ref } from 'vue'
   import L from 'leaflet'
+  import 'leaflet-draw'
   import { defaultMap } from '../constants/basemaps'
   import { center, defaultZoom } from '../constants/mapConfig'
   import { basemapsControl } from '../components/basemapsControl/basemapControl'
@@ -16,6 +17,7 @@
   import GeocodingControl from '../components/geocodingControl/GeocodingControl.vue'
   import GoToExtentButton from '@/components/GoToExtentButton/GoToExtentButton.vue'
   import GoToActualPositionButton from '@/components/GoToActualPositionButton/GoToActualPositionButton.vue'
+  import DrawFeaturesControl from '@/components/DrawFeaturesControl/DrawFeaturesControl.vue'
 
   const theme = useStorage<Theme>('theme', 'light')
 
@@ -53,6 +55,15 @@
       position: 'topright',
     })
     map.addControl(goToActualPosition)
+
+    const drawFeaturesControl = new (createLeafletControl(
+      'custom-control',
+      DrawFeaturesControl,
+      map
+    ))({
+      position: 'topright',
+    })
+    map.addControl(drawFeaturesControl)
   })
 </script>
 

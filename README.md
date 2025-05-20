@@ -1,6 +1,6 @@
-# tsyl-vite-template
+# Vue3_Leafletjs_widgets
 
-This template should help get you started developing with Vue 3 in Vite.
+This project is a personal repository with amazing widgets for leaflet maps for vue3 with vuetify.
 
 ## Recommended IDE Setup
 
