@@ -60,8 +60,6 @@
     try {
       const response = await login({ email: email.value, password: password.value })
 
-      console.log('MYRESPONSE', response)
-
       const token = useStorage('token', '')
       token.value = response.token
 

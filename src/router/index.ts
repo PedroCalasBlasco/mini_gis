@@ -4,7 +4,9 @@ import LoginView from '@/views/LoginView.vue'
 import MainMap from '@/views/MapView.vue'
 import SignUpView from '@/views/SignUpView.vue'
 import MainLayout from '@/layouts/MainLayout.vue'
+import DashboardLayout from '@/layouts/DashboardLayout.vue'
 import DashboardView from '@/views/DashboardView.vue'
+import NewEditMapView from '@/views/NewEditMapView.vue'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -19,9 +21,20 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/dashboard/:userId',
-    name: 'dashboard',
-    component: DashboardView,
+    component: DashboardLayout, // AQUI está el layout compartido
     meta: { requiresAuth: true },
+    children: [
+      {
+        path: '',
+        name: 'dashboard',
+        component: DashboardView,
+      },
+      {
+        path: 'newMap',
+        name: 'newmap',
+        component: NewEditMapView,
+      },
+    ],
   },
   {
     path: '/map',
