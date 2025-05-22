@@ -7,26 +7,28 @@ import * as directives from 'vuetify/directives'
 const light = {
   dark: false,
   colors: {
-    primary: '#a21e25',
+    primary: '#161934',
     secondary: '#577CA0',
     error: '#ff5252',
     background: '#f1f4f8',
     surface_variant: '#FFFFFF',
     dark: '#212121',
     border: '#e7e7e7',
+    white: '#ffffff',
   },
 }
 
 const dark = {
   dark: true,
   colors: {
-    primary: '#a21e25',
+    primary: '#161934',
     secondary: '#577CA0',
     error: '#ff5252',
     background: '#000000',
     surface_variant: '#212121',
     dark: '#212121',
     border: '#393939',
+    white: '#ffffff',
   },
 }
 
