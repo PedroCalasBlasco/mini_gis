@@ -72,7 +72,7 @@
       const expiresAt = useStorage('expiresAt', '')
       expiresAt.value = (Date.now() + 10 * 60 * 1000).toString()
 
-      router.push('/dashboard')
+      router.push({ name: 'dashboard', params: { userId: userId.value } })
     } catch (error) {
       console.error('Error en login:', error)
       invalidLogin.value = true
