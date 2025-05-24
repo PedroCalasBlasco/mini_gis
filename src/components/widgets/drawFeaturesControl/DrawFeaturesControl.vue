@@ -46,7 +46,7 @@
   import type { Theme } from '@/types/config'
   import { defineProps } from 'vue'
   import L from 'leaflet'
-  import { drawingMapTools } from '@/components/DrawFeaturesControl/Composables/DrwaFeatures'
+  import { drawingMapTools } from '@/components/widgets/drawFeaturesControl/Composables/DrwaFeatures'
 
   const props = defineProps<{ map: L.Map }>()
 
