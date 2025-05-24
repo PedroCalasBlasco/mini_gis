@@ -3,7 +3,6 @@ import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 import LoginView from '@/views/LoginView.vue'
 import MainMap from '@/views/MapView.vue'
 import SignUpView from '@/views/SignUpView.vue'
-import MainLayout from '@/layouts/MainLayout.vue'
 import DashboardLayout from '@/layouts/DashboardLayout.vue'
 import DashboardView from '@/views/DashboardView.vue'
 import NewEditMapView from '@/views/NewEditMapView.vue'
@@ -34,15 +33,8 @@ const routes: RouteRecordRaw[] = [
         name: 'newmap',
         component: NewEditMapView,
       },
-    ],
-  },
-  {
-    path: '/map',
-    component: MainLayout,
-    meta: { requiresAuth: true },
-    children: [
       {
-        path: '',
+        path: 'map/:mapid',
         name: 'map',
         component: MainMap,
       },

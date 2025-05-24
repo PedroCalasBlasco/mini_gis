@@ -8,18 +8,19 @@
   import 'leaflet-draw'
   import { defaultMap } from '../constants/basemaps'
   import { center, defaultZoom } from '../constants/mapConfig'
-  import { basemapsControl } from '../components/basemapsControl/basemapControl'
+
   import { polygon } from '../constants/layers/polygon'
   import { type Theme } from '../types/config'
 
   import { useStorage } from '@vueuse/core'
   import { createLeafletControl } from '@/utils/leafletControl'
-  import GeocodingControl from '../components/geocodingControl/GeocodingControl.vue'
-  import GoToExtentButton from '@/components/GoToExtentButton/GoToExtentButton.vue'
-  import GoToActualPositionButton from '@/components/GoToActualPositionButton/GoToActualPositionButton.vue'
-  import DrawFeaturesControl from '@/components/DrawFeaturesControl/DrawFeaturesControl.vue'
+  import { basemapsControl } from '../components/widgets/basemapsControl/basemapControl'
+  import GeocodingControl from '../components/widgets/geocodingControl/GeocodingControl.vue'
+  import GoToExtentButton from '@/components/widgets/goToExtentButton/GoToExtentButton.vue'
+  import GoToActualPositionButton from '@/components/widgets/goToActualPositionButton/GoToActualPositionButton.vue'
+  import DrawFeaturesControl from '@/components/widgets/drawFeaturesControl/DrawFeaturesControl.vue'
 
-  const theme = useStorage<Theme>('theme', 'light')
+  const theme = useStorage<Theme>('theme', 'dark')
 
   const mapContainer = ref<HTMLElement | undefined>(undefined)
 

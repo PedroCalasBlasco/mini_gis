@@ -1,5 +1,5 @@
 import L from 'leaflet'
-import { baseMaps, baseMapsThumb } from '../../constants/basemaps'
+import { baseMaps, baseMapsThumb } from '../../../constants/basemaps'
 import './styles.css'
 
 const createElement = (tag: string, className?: string) => L.DomUtil.create(tag, className)

@@ -1,7 +1,7 @@
-import type { baseMap } from '@/types/baseMap'
+import type { BaseMap } from '@/types/baseMap'
 import api from './api'
 
-export const getBaseMaps = async (token: string): Promise<baseMap[]> => {
+export const getBaseMaps = async (token: string): Promise<BaseMap[]> => {
   return await api
     .get(`basemaps`, {
       headers: {

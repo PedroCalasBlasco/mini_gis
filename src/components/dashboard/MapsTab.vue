@@ -1,6 +1,6 @@
 <template>
-  <v-row>
-    <v-col v-for="(map, index) in mapsOf" :key="map.id" cols="12" sm="6" md="4">
+  <v-row class="maps-container">
+    <v-col v-for="map in maps" :key="map.id" cols="12" sm="6" md="4">
       <v-hover v-slot="{ isHovering, props }">
         <v-card
           v-bind="props"
@@ -8,9 +8,14 @@
           :elevation="isHovering ? 12 : 4"
           @click="selectMap(map)"
         >
-          <v-img :src="maps[index].thumbnail" height="200px" class="map-img" cover>
+          <v-img
+            :src="`https://placehold.co/400x200/orange/white?text=${map.name}`"
+            height="200px"
+            class="map-img"
+            cover
+          >
             <template #placeholder>
-              <v-row class="fill-height ma-0" align="center" justify="center">
+              <v-row class="fill-height ma-0 align-center justify-center">
                 <v-progress-circular indeterminate color="grey-lighten-5" />
               </v-row>
             </template>
@@ -29,7 +34,7 @@
               <v-btn icon size="small" variant="text" @click.stop="editMap(map)">
                 <v-icon>mdi-pencil</v-icon>
               </v-btn>
-              <v-btn icon variant="text" size="small" @click.stop="deleteMap(map)">
+              <v-btn icon variant="text" size="small" @click.stop="openDeleteDialog(map)">
                 <v-icon color="red">mdi-delete</v-icon>
               </v-btn>
             </div>
@@ -38,6 +43,8 @@
       </v-hover>
     </v-col>
   </v-row>
+
+  <DeleteMapDialog v-model:delete-dialog="deleteDialog" :map="mapToDelete" @refresh="refresh" />
 </template>
 
 <script lang="ts" setup>
@@ -45,56 +52,56 @@
   import { useStorage } from '@vueuse/core'
   import { onMounted, ref, type Ref } from 'vue'
   import { useRoute } from 'vue-router'
-  import type { Map } from '@/types/map'
+  import type { MapFromAPI } from '@/types/map'
+
+  import DeleteMapDialog from '@/components/dashboard/DeleteMapDialog.vue'
+  import router from '@/router'
 
   const route = useRoute()
 
-  const maps = ref([
-    {
-      id: 1,
-      name: 'Mapa de incendios',
-      thumbnail: 'https://placehold.co/400x200/orange/white?text=Incendios',
-    },
-    {
-      id: 2,
-      name: 'Zonas protegidas',
-      thumbnail: 'https://placehold.co/400x200/green/white?text=Protegidas',
-    },
-    {
-      id: 3,
-      name: 'Cobertura forestal',
-      thumbnail: 'https://placehold.co/400x200/forestgreen/white?text=Bosque',
-    },
-  ])
+  const token = useStorage('token', '')
+  const userId = useStorage('userId', '')
 
-  function selectMap(map: Map) {
+  const deleteDialog = ref(false)
+  const mapToDelete = ref<MapFromAPI | undefined>(undefined)
+
+  function openDeleteDialog(map: MapFromAPI) {
+    mapToDelete.value = map
+    deleteDialog.value = true
+  }
+
+  function selectMap(map: MapFromAPI) {
+    router.push({ name: 'map', params: { userid: userId.value, mapid: map.id } })
     console.log('Seleccionado', map.name)
   }
 
-  function shareMap(map: Map) {
+  function shareMap(map: MapFromAPI) {
     console.log('Compartir', map.name)
   }
 
-  function editMap(map: Map) {
+  function editMap(map: MapFromAPI) {
     console.log('Editar', map.name)
   }
 
-  function deleteMap(map: Map) {
-    console.log('Eliminar', map.name)
-    maps.value = maps.value.filter((m) => m.id !== map.id)
+  const maps: Ref<MapFromAPI[]> = ref([])
+
+  async function refresh() {
+    await fetchMaps()
   }
 
-  const token = useStorage('token', '')
+  async function fetchMaps() {
+    maps.value = await getMapsByUser(route.params.userId as string, token.value)
+  }
 
-  const mapsOf: Ref<Map[]> = ref([])
-
-  onMounted(async () => {
-    mapsOf.value = await getMapsByUser(route.params.userId as string, token.value)
-    console.log('MAPS', maps)
-  })
+  onMounted(fetchMaps)
 </script>
 
 <style scoped>
+  .maps-container {
+    max-height: calc(100vh - 165px); /* altura máxima: ajusta 100px según header/footer */
+    overflow-y: auto; /* scroll vertical si hace falta */
+  }
+
   .map-card {
     transition: transform 0.2s ease;
     cursor: pointer;

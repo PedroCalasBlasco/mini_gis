@@ -1,20 +1,26 @@
 import type { Widget } from './widget'
 import type { Layer } from './layer'
+import type { BaseMap } from './baseMap'
 
 export interface Map {
-  id: number
   name: string
   description?: string
-  createdAt: string
-  updatedAt: string
   isPublic: boolean
   centerLat: number
   centerLng: number
+  userId: number
+  zoom: number
   bbox: Bbox
-  baseMapId: number
+  baseMapId?: number
   layers: Layer[]
   widgets: Widget[]
-  baseMap: BaseMap
+  baseMap?: BaseMap
+}
+
+export interface MapFromAPI extends Map {
+  id: number
+  createdAt: string
+  updatedAt: string
 }
 
 export interface Bbox {
@@ -22,10 +28,4 @@ export interface Bbox {
   maxLng: number
   minLat: number
   minLng: number
-}
-
-export interface BaseMap {
-  id: number
-  name: string
-  url: string
 }

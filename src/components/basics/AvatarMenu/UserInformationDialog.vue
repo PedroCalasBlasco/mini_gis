@@ -76,11 +76,11 @@
     (e: 'update:dialog', value: boolean): void
   }>()
 
-  const token = useStorage('token', '')
-  const userId = useStorage('userId', '')
-
   const user = useVModel(props, 'user', emit)
   const dialog = useVModel(props, 'dialog', emit)
+
+  const token = useStorage('token', '')
+  const userId = useStorage('userId', '')
 
   const colorMenu = ref(false)
 
