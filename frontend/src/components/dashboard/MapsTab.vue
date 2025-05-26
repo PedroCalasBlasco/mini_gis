@@ -72,7 +72,6 @@
 
   function selectMap(map: MapFromAPI) {
     router.push({ name: 'map', params: { userid: userId.value, mapid: map.id } })
-    console.log('Seleccionado', map.name)
   }
 
   function shareMap(map: MapFromAPI) {
@@ -80,7 +79,7 @@
   }
 
   function editMap(map: MapFromAPI) {
-    console.log('Editar', map.name)
+    router.push({ name: 'editmap', params: { idMap: map.id } })
   }
 
   const maps: Ref<MapFromAPI[]> = ref([])

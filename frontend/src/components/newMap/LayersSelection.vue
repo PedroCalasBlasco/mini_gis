@@ -36,7 +36,7 @@
   import { useVModel } from '@vueuse/core'
 
   const props = defineProps<{
-    selectedLayers: Layer[]
+    selectedLayers?: Layer[]
   }>()
 
   const emit = defineEmits<{

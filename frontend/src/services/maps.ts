@@ -11,6 +11,25 @@ export const getMapsByUser = async (userId: string, token: string): Promise<MapF
     .json()
 }
 
+export async function getMapByUserAndId(
+  mapId: string,
+  userId: string,
+  token: string
+): Promise<MapFromAPI> {
+  try {
+    const response = await api.get(`maps/${mapId}?userId=${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+
+    return await response.json()
+  } catch (error) {
+    console.error('❌ Error al obtener el mapa por ID y usuario:', error)
+    throw error
+  }
+}
+
 export async function createMap(newMap: Map, token: string) {
   try {
     const response = await api.post('maps', {
@@ -46,7 +65,7 @@ export async function deleteMap(id: number, token: string) {
   }
 }
 
-export async function updateMap(id: number, updatedMap: Map, token: string) {
+export async function updateMap(id: string, updatedMap: Map, token: string) {
   try {
     const response = await api.put(`maps/${id}`, {
       headers: {
