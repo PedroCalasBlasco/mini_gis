@@ -10,7 +10,6 @@
   import type { Theme } from '@/types/config'
   import { defineProps } from 'vue'
   import type L from 'leaflet'
-  import { defaultZoom } from '@/constants/mapConfig'
 
   const props = defineProps<{ map: L.Map }>()
 
@@ -21,7 +20,7 @@
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords
-          props.map.flyTo([latitude, longitude], defaultZoom)
+          props.map.flyTo([latitude, longitude], 10)
         },
         (error) => {
           console.error('Error getting location:', error)

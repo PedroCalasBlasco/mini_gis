@@ -29,8 +29,13 @@ const routes: RouteRecordRaw[] = [
         component: DashboardView,
       },
       {
-        path: 'newMap',
+        path: 'newmap',
         name: 'newmap',
+        component: NewEditMapView,
+      },
+      {
+        path: 'editmap/:idMap',
+        name: 'editmap',
         component: NewEditMapView,
       },
       {

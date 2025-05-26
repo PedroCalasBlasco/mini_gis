@@ -43,6 +43,6 @@
 
   const goToNewMap = () => {
     const userId = route.params.userId
-    router.push(`/dashboard/${userId}/newMap`)
+    router.push(`/dashboard/${userId}/newmap`)
   }
 </script>

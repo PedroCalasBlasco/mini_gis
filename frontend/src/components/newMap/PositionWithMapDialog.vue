@@ -17,9 +17,13 @@
 
 <script lang="ts" setup>
   import { useVModel } from '@vueuse/core'
-  import { watch } from 'vue'
+  import { nextTick, watch } from 'vue'
   import L from 'leaflet'
   import type { Bbox } from '@/types/map'
+
+  import { createLeafletControl } from '@/utils/leafletControl'
+  import GeocodingControl from '@/components/widgets/geocodingControl/GeocodingControl.vue'
+  import GoToActualPositionButton from '@/components/widgets/goToActualPositionButton/GoToActualPositionButton.vue'
 
   const props = defineProps<{
     centerLat: number
@@ -45,11 +49,31 @@
 
   let leafletMap: L.Map | null = null
 
-  watch(mapDialog, (val) => {
+  watch(mapDialog, async (val) => {
     if (val) {
-      setTimeout(() => initLeafletMap(), 200)
+      await nextTick()
+      setTimeout(() => {
+        resetLeafletMap()
+      }, 300)
     }
   })
+
+  function resetLeafletMap() {
+    // 🔄 Eliminar mapa si ya existe
+    if (leafletMap) {
+      leafletMap.remove()
+      leafletMap = null
+    }
+
+    // 🧹 Limpiar el contenedor del mapa si quedó algo residual
+    const container = document.getElementById('leaflet-map')
+    if (container) {
+      container.innerHTML = ''
+    }
+
+    // ⚙️ Volver a inicializar
+    initLeafletMap()
+  }
 
   function initLeafletMap() {
     if (leafletMap) return
@@ -82,6 +106,20 @@
       centerLng.value = pos.lng
       updateBBox()
     })
+
+    const geoControl = new (createLeafletControl('custom-control', GeocodingControl, leafletMap))({
+      position: 'topright',
+    })
+    leafletMap.addControl(geoControl)
+
+    const goToActualPosition = new (createLeafletControl(
+      'custom-control',
+      GoToActualPositionButton,
+      leafletMap
+    ))({
+      position: 'bottomright',
+    })
+    leafletMap.addControl(goToActualPosition)
   }
 
   function updateBBox() {

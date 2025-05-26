@@ -40,9 +40,9 @@
             color="primary"
             :disabled="createMapIsDisabled"
             :loading="loading"
-            @click="createNewMap"
+            @click="createOrEditMap"
           >
-            CREATE NEW MAP
+            {{ route.params.idMap ? 'EDIT MAP' : 'CREATE NEW MAP' }}
           </v-btn>
         </v-col>
       </v-row>
@@ -59,15 +59,15 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, ref, type Ref } from 'vue'
+  import { computed, onMounted, ref, type Ref } from 'vue'
 
   import type { Layer } from '@/types/layer'
   import type { Widget } from '@/types/widget'
   import type { Map } from '@/types/map'
 
   import { useStorage } from '@vueuse/core'
-  import { createMap } from '@/services/maps'
-  import { useRouter } from 'vue-router'
+  import { createMap, getMapByUserAndId, updateMap } from '@/services/maps'
+  import { useRoute, useRouter } from 'vue-router'
 
   import BaseMapSelectionSlide from '@/components/newMap/BaseMapSelectionSlide.vue'
   import CenterPositionSelection from '@/components/newMap/CenterPositionSelection.vue'
@@ -76,6 +76,8 @@
   import PositionWithMapDialog from '@/components/newMap/PositionWithMapDialog.vue'
 
   import { useSnackbarStore } from '@/store/snackbar'
+
+  const route = useRoute()
 
   const snackbar = useSnackbarStore()
 
@@ -116,25 +118,55 @@
     )
   })
 
-  async function createNewMap() {
+  async function createOrEditMap() {
     loading.value = true
     mapData.value.layers = selectedLayers.value
     mapData.value.widgets = selectedWidgets.value
     mapData.value.baseMapId = baseMapId.value
-    console.log(mapData.value)
     try {
-      await createMap(mapData.value, token.value)
-      snackbar.openSnackbar('Map Loaded Succesfully', 'success')
+      if (route.params.idMap) {
+        await updateMap(route.params.idMap as string, mapData.value, token.value)
+        snackbar.openSnackbar('Map Edited Succesfully', 'success')
+      } else {
+        await createMap(mapData.value, token.value)
+        snackbar.openSnackbar('Map Saved Succesfully', 'success')
+      }
       setTimeout(() => {
         router.push({ name: 'dashboard', params: { userId: userId.value } })
       }, 500)
     } catch (error) {
       console.error(error)
-      snackbar.openSnackbar('Error Loading Map', 'error')
+      if (route.params.idMap) {
+        snackbar.openSnackbar('Error Editing Map', 'error')
+      } else {
+        snackbar.openSnackbar('Error Saving Map', 'error')
+      }
     } finally {
       loading.value = false
     }
   }
+
+  onMounted(async () => {
+    if (route.params.idMap) {
+      const mapInfo = await getMapByUserAndId(
+        route.params.idMap as string,
+        userId.value,
+        token.value
+      )
+
+      mapData.value.name = mapInfo.name
+      mapData.value.description = mapInfo.description
+      mapData.value.isPublic = mapInfo.isPublic
+
+      mapData.value.centerLat = mapInfo.centerLat
+      mapData.value.centerLng = mapInfo.centerLng
+      mapData.value.bbox = mapInfo.bbox
+
+      baseMapId.value = mapInfo.baseMapId
+      selectedLayers.value = mapInfo.layers
+      selectedWidgets.value = mapInfo.widgets
+    }
+  })
 </script>
 
 <style scoped>

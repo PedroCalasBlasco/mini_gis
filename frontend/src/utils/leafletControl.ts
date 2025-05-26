@@ -1,9 +1,7 @@
 import { createApp, defineComponent, h, type Component } from 'vue'
-import { createVuetify } from 'vuetify'
 import L from 'leaflet'
+import vuetify from '@/plugins/vuetify'
 import 'vuetify/styles'
-
-const vuetify = createVuetify()
 
 /**
  * Crea un control de Leaflet que monta un componente Vue.

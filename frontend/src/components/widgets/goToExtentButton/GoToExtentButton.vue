@@ -10,13 +10,14 @@
   import type { Theme } from '@/types/config'
   import { defineProps } from 'vue'
   import type L from 'leaflet'
-  import { center, defaultZoom } from '@/constants/mapConfig'
+  //import { center, defaultZoom } from '@/constants/mapConfig'
 
   const props = defineProps<{ map: L.Map }>()
 
   const theme = useStorage<Theme>('theme', 'light')
 
   function goToExtent() {
-    props.map.flyTo(center, defaultZoom)
+    console.log('PEDRO')
+    //props.map.flyTo(center, defaultZoom)
   }
 </script>
