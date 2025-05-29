@@ -1,41 +1,46 @@
 <template>
   <div class="scroll-wrapper">
-    <v-container class="mt-4 bg-white">
-      <v-row>
-        <v-col cols="6">
-          <h3 class="mb-2">Basic Information</h3>
-          <v-text-field v-model="mapData.name" label="Map Name" required></v-text-field>
-        </v-col>
-        <v-col cols="6" class="d-flex justify-center align-center">
-          <v-switch v-model="mapData.isPublic" label="Is Públic?" hide-details></v-switch>
-        </v-col>
-        <v-col cols="6">
-          <v-textarea
-            v-model="mapData.description"
-            label="Description"
-            rows="2"
-            hide-details
-            variant="outlined"
-          ></v-textarea>
-        </v-col>
-      </v-row>
+    <v-container class="mt-4">
+      <v-card elevation="2" class="pa-6">
+        <v-card-title class="text-h5">Create New Map</v-card-title>
+        <v-card-text>
+          <v-row>
+            <v-col cols="12">
+              <h3>Map Basic Information</h3>
+            </v-col>
+            <v-col cols="6">
+              <v-text-field v-model="mapData.name" label="Map Name" required></v-text-field>
+            </v-col>
+            <v-col cols="6" class="d-flex justify-end align-center">
+              <v-switch v-model="mapData.isPublic" label="Is Públic?" hide-details></v-switch>
+            </v-col>
+            <v-col cols="12">
+              <v-textarea
+                v-model="mapData.description"
+                label="Description"
+                rows="2"
+                hide-details
+                variant="outlined"
+              ></v-textarea>
+            </v-col>
+          </v-row>
 
-      <BaseMapSelectionSlide v-model:base-map-id="baseMapId" />
+          <BaseMapSelectionSlide v-model:base-map-id="baseMapId" />
 
-      <CenterPositionSelection
-        v-model:center-lat="mapData.centerLat"
-        v-model:center-lng="mapData.centerLng"
-        v-model:zoom="mapData.zoom"
-        v-model:map-dialog="mapDialog"
-      />
+          <CenterPositionSelection
+            v-model:center-lat="mapData.centerLat"
+            v-model:center-lng="mapData.centerLng"
+            v-model:zoom="mapData.zoom"
+            v-model:map-dialog="mapDialog"
+          />
 
-      <v-row>
-        <LayersSelection v-model:selected-layers="selectedLayers" />
-        <WidgetsSelection v-model:selected-widgets="selectedWidgets" />
-      </v-row>
+          <v-row>
+            <LayersSelection v-model:selected-layers="selectedLayers" />
+            <WidgetsSelection v-model:selected-widgets="selectedWidgets" />
+          </v-row>
+        </v-card-text>
 
-      <v-row>
-        <v-col cols="12" class="d-flex align-center justify-end">
+        <v-card-actions class="d-flex justify-end">
           <v-btn
             color="primary"
             :disabled="createMapIsDisabled"
@@ -44,16 +49,16 @@
           >
             {{ route.params.idMap ? 'EDIT MAP' : 'CREATE NEW MAP' }}
           </v-btn>
-        </v-col>
-      </v-row>
+        </v-card-actions>
 
-      <PositionWithMapDialog
-        v-model:map-dialog="mapDialog"
-        v-model:center-lat="mapData.centerLat"
-        v-model:center-lng="mapData.centerLng"
-        v-model:zoom="mapData.zoom"
-        v-model:bbox="mapData.bbox"
-      />
+        <PositionWithMapDialog
+          v-model:map-dialog="mapDialog"
+          v-model:center-lat="mapData.centerLat"
+          v-model:center-lng="mapData.centerLng"
+          v-model:zoom="mapData.zoom"
+          v-model:bbox="mapData.bbox"
+        />
+      </v-card>
     </v-container>
   </div>
 </template>

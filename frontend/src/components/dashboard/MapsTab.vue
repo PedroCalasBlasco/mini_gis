@@ -1,48 +1,55 @@
 <template>
-  <v-row class="maps-container">
-    <v-col v-for="map in maps" :key="map.id" cols="12" sm="6" md="4">
-      <v-hover v-slot="{ isHovering, props }">
-        <v-card
-          v-bind="props"
-          class="map-card ma-2"
-          :elevation="isHovering ? 12 : 4"
-          @click="selectMap(map)"
-        >
-          <v-img
-            :src="`https://placehold.co/400x200/orange/white?text=${map.name}`"
-            height="200px"
-            class="map-img"
-            cover
-          >
-            <template #placeholder>
-              <v-row class="fill-height ma-0 align-center justify-center">
-                <v-progress-circular indeterminate color="grey-lighten-5" />
-              </v-row>
-            </template>
+  <v-card class="pa-4">
+    <v-card-title>My Maps</v-card-title>
+    <v-card-text>
+      <v-row v-if="maps.length" class="maps-container">
+        <v-col v-for="map in maps" :key="map.id" cols="12" sm="6" md="3">
+          <v-hover v-slot="{ isHovering, props }">
+            <v-card
+              v-bind="props"
+              class="map-card ma-2"
+              :elevation="isHovering ? 12 : 4"
+              @click="selectMap(map)"
+            >
+              <v-img
+                :src="`https://placehold.co/400x200/orange/white?text=${map.name}`"
+                height="200px"
+                class="map-img"
+                cover
+              >
+                <template #placeholder>
+                  <v-row class="fill-height ma-0 align-center justify-center">
+                    <v-progress-circular indeterminate color="grey-lighten-5" />
+                  </v-row>
+                </template>
 
-            <div v-if="isHovering" class="hover-overlay d-flex align-center justify-center">
-              <v-btn color="white" variant="elevated">Open</v-btn>
-            </div>
-          </v-img>
+                <div v-if="isHovering" class="hover-overlay d-flex align-center justify-center">
+                  <v-btn color="white" variant="elevated">Open</v-btn>
+                </div>
+              </v-img>
 
-          <v-card-title class="d-flex justify-space-between align-center">
-            <span class="text-body-2">{{ map.name }}</span>
-            <div class="d-flex gap-1">
-              <v-btn icon size="small" variant="text" @click.stop="shareMap(map)">
-                <v-icon>mdi-share-variant</v-icon>
-              </v-btn>
-              <v-btn icon size="small" variant="text" @click.stop="editMap(map)">
-                <v-icon>mdi-pencil</v-icon>
-              </v-btn>
-              <v-btn icon variant="text" size="small" @click.stop="openDeleteDialog(map)">
-                <v-icon color="red">mdi-delete</v-icon>
-              </v-btn>
-            </div>
-          </v-card-title>
-        </v-card>
-      </v-hover>
-    </v-col>
-  </v-row>
+              <v-card-title class="d-flex justify-space-between align-center">
+                <span class="text-body-2">{{ map.name }}</span>
+                <div class="d-flex gap-1">
+                  <v-btn icon size="small" variant="text" @click.stop="shareMap(map)">
+                    <v-icon>mdi-share-variant</v-icon>
+                  </v-btn>
+                  <v-btn icon size="small" variant="text" @click.stop="editMap(map)">
+                    <v-icon>mdi-pencil</v-icon>
+                  </v-btn>
+                  <v-btn icon variant="text" size="small" @click.stop="openDeleteDialog(map)">
+                    <v-icon color="red">mdi-delete</v-icon>
+                  </v-btn>
+                </div>
+              </v-card-title>
+            </v-card>
+          </v-hover>
+        </v-col>
+      </v-row>
+
+      <v-alert v-else type="info" variant="tonal">No maps to show.</v-alert>
+    </v-card-text>
+  </v-card>
 
   <DeleteMapDialog v-model:delete-dialog="deleteDialog" :map="mapToDelete" @refresh="refresh" />
 </template>
