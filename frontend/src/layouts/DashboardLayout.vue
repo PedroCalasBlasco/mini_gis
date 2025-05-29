@@ -6,11 +6,9 @@
     </v-app-bar>
 
     <v-main>
-      <router-view v-slot="{ Component, route }">
-        <transition name="slide-fade" mode="out-in">
-          <component :is="Component" :key="route.fullPath" />
-        </transition>
-      </router-view>
+      <transition name="slide-fade" mode="out-in">
+        <router-view />
+      </transition>
     </v-main>
   </v-app>
 </template>

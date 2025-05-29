@@ -9,7 +9,7 @@
       </v-col>
       <v-col cols="auto">
         <v-btn v-if="tab === 'maps'" color="primary" @click="goToNewMap">New Map</v-btn>
-        <v-btn v-else color="primary" @click="layerDialog = true">New Layer</v-btn>
+        <v-btn v-else color="primary" @click="goToNewLayer">New Layer</v-btn>
       </v-col>
     </v-row>
 
@@ -22,8 +22,6 @@
         <LayersTab />
       </v-window-item>
     </v-window>
-
-    <NewLayerDialog v-model:layer-dialog="layerDialog" />
   </v-container>
 </template>
 
@@ -36,13 +34,16 @@
 
   import MapsTab from '@/components/dashboard/MapsTab.vue'
   import LayersTab from '@/components/dashboard/LayersTab.vue'
-  import NewLayerDialog from '@/components/dashboard/NewLayerDialog.vue'
 
   const tab = ref('maps')
-  const layerDialog = ref(false)
 
   const goToNewMap = () => {
     const userId = route.params.userId
     router.push(`/dashboard/${userId}/newmap`)
+  }
+
+  const goToNewLayer = () => {
+    const userId = route.params.userId
+    router.push(`/dashboard/${userId}/newlayer`)
   }
 </script>

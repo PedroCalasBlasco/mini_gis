@@ -6,6 +6,9 @@ import SignUpView from '@/views/SignUpView.vue'
 import DashboardLayout from '@/layouts/DashboardLayout.vue'
 import DashboardView from '@/views/DashboardView.vue'
 import NewEditMapView from '@/views/NewEditMapView.vue'
+import NewEditLayerView from '@/views/NewEditLayerView.vue'
+import FeaturesTableView from '@/views/FeaturesTableView.vue'
+import LayerStylesView from '@/views/LayerStylesView.vue'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -42,6 +45,26 @@ const routes: RouteRecordRaw[] = [
         path: 'map/:mapid',
         name: 'map',
         component: MainMap,
+      },
+      {
+        path: 'newlayer',
+        name: 'newlayer',
+        component: NewEditLayerView,
+      },
+      {
+        path: 'editlayer/:idLayer',
+        name: 'editlayer',
+        component: NewEditLayerView,
+      },
+      {
+        path: 'featurestable/:idLayer',
+        name: 'featurestable',
+        component: FeaturesTableView,
+      },
+      {
+        path: 'layerstyles/:idLayer',
+        name: 'layerstyles',
+        component: LayerStylesView,
       },
     ],
   },
