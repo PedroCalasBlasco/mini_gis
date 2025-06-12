@@ -11,6 +11,29 @@ export const getLayersByUser = async (userId: string, token: string): Promise<La
     .json()
 }
 
+export const getLayersSharedWithUser = async (
+  userId: string,
+  token: string
+): Promise<LayerFromAPI[]> => {
+  return await api
+    .get(`layers/shared?userId=${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .json()
+}
+
+export const getPublicLayers = async (userId: string, token: string): Promise<LayerFromAPI[]> => {
+  return await api
+    .get(`layers/public?userId=${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .json()
+}
+
 export const getLayerById = async (layerId: string, token: string): Promise<LayerFromAPI> => {
   return await api
     .get(`layers/${layerId}`, {

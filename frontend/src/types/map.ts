@@ -2,6 +2,13 @@ import type { Widget } from './widget'
 import type { Layer } from './layer'
 import type { BaseMap } from './baseMap'
 
+export interface MapData {
+  centerLat: number
+  centerLng: number
+  zoom: number
+  bbox: Bbox
+}
+
 export interface Map {
   name: string
   description?: string

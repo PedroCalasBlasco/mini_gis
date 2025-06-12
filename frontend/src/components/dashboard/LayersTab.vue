@@ -1,6 +1,6 @@
 <template>
   <v-card class="pa-4">
-    <v-card-title>My Layers</v-card-title>
+    <v-card-title>{{ props.title }}</v-card-title>
     <v-card-text>
       <v-list v-if="layers.length" class="pa-0">
         <v-list-item
@@ -62,18 +62,26 @@
 </template>
 
 <script lang="ts" setup>
-  import { getLayersByUser } from '@/services/layers'
   import type { LayerFromAPI } from '@/types/layer'
-  import { useStorage } from '@vueuse/core'
-  import { onMounted, ref, type Ref } from 'vue'
-  import { useRoute, useRouter } from 'vue-router'
+  import { useVModel } from '@vueuse/core'
+  import { ref } from 'vue'
+  import { useRouter } from 'vue-router'
 
   import DeleteLayerDialog from '@/components/dashboard/DeleteLayerDialog.vue'
 
-  const router = useRouter()
-  const route = useRoute()
+  const props = defineProps<{
+    title: string
+    layers: LayerFromAPI[]
+  }>()
 
-  const token = useStorage('token', '')
+  const emit = defineEmits<{
+    (e: 'update:layers', value: LayerFromAPI[]): void
+    (e: 'refreshLayer'): void
+  }>()
+
+  const layers = useVModel(props, 'layers', emit)
+
+  const router = useRouter()
 
   const deleteDialog = ref(false)
   const layerToDelete = ref<LayerFromAPI | undefined>(undefined)
@@ -87,7 +95,7 @@
     switch (layer.geometryType) {
       case 'Point':
         return 'mdi-vector-point'
-      case 'Line':
+      case 'LineString':
         return 'mdi-vector-line'
       case 'Polygon':
         return 'mdi-vector-polygon'
@@ -127,17 +135,9 @@
     console.log('Compartir capa con id:', id)
   }
 
-  const layers: Ref<LayerFromAPI[]> = ref([])
-
   async function refresh() {
-    await fetchLayers()
+    emit('refreshLayer')
   }
-
-  async function fetchLayers() {
-    layers.value = await getLayersByUser(route.params.userId as string, token.value)
-  }
-
-  onMounted(fetchLayers)
 </script>
 
 <style scoped>

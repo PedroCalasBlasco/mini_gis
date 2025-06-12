@@ -11,6 +11,29 @@ export const getMapsByUser = async (userId: string, token: string): Promise<MapF
     .json()
 }
 
+export const getMapsSharedWithUser = async (
+  userId: string,
+  token: string
+): Promise<MapFromAPI[]> => {
+  return await api
+    .get(`maps/shared?userId=${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .json()
+}
+
+export const getPublicMaps = async (userId: string, token: string): Promise<MapFromAPI[]> => {
+  return await api
+    .get(`maps/public?userId=${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .json()
+}
+
 export async function getMapByUserAndId(
   mapId: string,
   userId: string,
