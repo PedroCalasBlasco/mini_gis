@@ -1,8 +1,8 @@
 <template>
-  <v-card class="pa-4">
-    <v-card-title>My Maps</v-card-title>
+  <v-card class="pa-4 pt-0">
+    <v-card-title>{{ props.title }}</v-card-title>
     <v-card-text>
-      <v-row v-if="maps.length" class="maps-container">
+      <v-row v-if="maps && maps.length" class="maps-container">
         <v-col v-for="map in maps" :key="map.id" cols="12" sm="6" md="3">
           <v-hover v-slot="{ isHovering, props }">
             <v-card
@@ -55,18 +55,26 @@
 </template>
 
 <script lang="ts" setup>
-  import { getMapsByUser } from '@/services/maps'
   import { useStorage } from '@vueuse/core'
-  import { onMounted, ref, type Ref } from 'vue'
-  import { useRoute } from 'vue-router'
+  import { ref } from 'vue'
   import type { MapFromAPI } from '@/types/map'
+  import { useVModel } from '@vueuse/core'
 
   import DeleteMapDialog from '@/components/dashboard/DeleteMapDialog.vue'
   import router from '@/router'
 
-  const route = useRoute()
+  const props = defineProps<{
+    title: string
+    maps: MapFromAPI[]
+  }>()
 
-  const token = useStorage('token', '')
+  const emit = defineEmits<{
+    (e: 'update:maps', value: MapFromAPI[]): void
+    (e: 'refreshMap'): void
+  }>()
+
+  const maps = useVModel(props, 'maps', emit)
+
   const userId = useStorage('userId', '')
 
   const deleteDialog = ref(false)
@@ -89,17 +97,9 @@
     router.push({ name: 'editmap', params: { idMap: map.id } })
   }
 
-  const maps: Ref<MapFromAPI[]> = ref([])
-
   async function refresh() {
-    await fetchMaps()
+    emit('refreshMap')
   }
-
-  async function fetchMaps() {
-    maps.value = await getMapsByUser(route.params.userId as string, token.value)
-  }
-
-  onMounted(fetchMaps)
 </script>
 
 <style scoped>

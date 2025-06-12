@@ -1,12 +1,12 @@
-import type { Feature } from './feature'
+import type { FeatureFromApi } from './feature'
 import type { User } from './user'
 
 export interface Layer {
   name: string
   description?: string
   users?: User[]
-  features?: Feature[]
-  geometryType?: string
+  features?: FeatureFromApi[]
+  geometryType?: GeometryType
   sourceUrl?: string
   ownerId: number
   isPublic: boolean
