@@ -66,9 +66,8 @@
 <script setup lang="ts">
   import { computed, onMounted, ref, type Ref } from 'vue'
 
-  import type { Layer } from '@/types/layer'
   import type { Widget } from '@/types/widget'
-  import type { Map } from '@/types/map'
+  import type { Map, MapLayer } from '@/types/map'
 
   import { useStorage } from '@vueuse/core'
   import { createMap, getMapByUserAndId, updateMap } from '@/services/maps'
@@ -81,6 +80,7 @@
   import PositionWithMapDialog from '@/components/newMap/PositionWithMapDialog.vue'
 
   import { useSnackbarStore } from '@/store/snackbar'
+  import type { LayerFromAPI } from '@/types/layer'
 
   const route = useRoute()
 
@@ -91,7 +91,7 @@
   const userId = useStorage('userId', '')
   const token = useStorage('token', '')
 
-  const selectedLayers: Ref<Layer[]> = ref([])
+  const selectedLayers: Ref<LayerFromAPI[]> = ref([])
   const selectedWidgets = ref<Widget[]>([])
   const baseMapId: Ref<number | undefined> = ref()
 
@@ -108,7 +108,7 @@
     zoom: 10,
     bbox: { minLat: 0, minLng: 0, maxLat: 0, maxLng: 0 },
     baseMapId: undefined,
-    layers: [] as Layer[],
+    mapLayers: [] as MapLayer[],
     widgets: [] as Widget[],
     userId: Number(userId.value),
   })
@@ -125,9 +125,12 @@
 
   async function createOrEditMap() {
     loading.value = true
+
     mapData.value.layers = selectedLayers.value
     mapData.value.widgets = selectedWidgets.value
     mapData.value.baseMapId = baseMapId.value
+
+    console.log(mapData.value)
     try {
       if (route.params.idMap) {
         await updateMap(route.params.idMap as string, mapData.value, token.value)
@@ -166,9 +169,10 @@
       mapData.value.centerLat = mapInfo.centerLat
       mapData.value.centerLng = mapInfo.centerLng
       mapData.value.bbox = mapInfo.bbox
+      mapData.value.zoom = mapInfo.zoom
 
       baseMapId.value = mapInfo.baseMapId
-      selectedLayers.value = mapInfo.layers
+      selectedLayers.value = mapInfo.mapLayers.map((m) => m.layer)
       selectedWidgets.value = mapInfo.widgets
     }
   })

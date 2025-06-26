@@ -14,16 +14,29 @@ export const getFeaturesByLayer = async (
     .json()
 }
 
-export const createFeatures = async (data: FeatureFromApi[], token: string): Promise<void> => {
+export const createFeatures = async (
+  data: FeatureFromApi[],
+  token: string,
+  layerId: number
+): Promise<void> => {
   const cleanedData = data.map(({ id: _, ...rest }) => ({
     ...rest,
     // NO convertimos properties, lo dejamos como array
   }))
 
-  await api.post('features', {
-    json: cleanedData,
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  })
+  if (data.length === 0) {
+    await api.post(`features?layerId=${String(layerId)}`, {
+      json: [],
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+  } else {
+    await api.post('features', {
+      json: cleanedData,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+  }
 }

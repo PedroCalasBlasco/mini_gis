@@ -28,12 +28,14 @@
 
           <template #append>
             <v-btn icon variant="text" color="primary" @click="viewStyleLayer(layer.id)">
-              <v-badge color="error" dot>
+              <v-icon v-if="layer.style">mdi-palette</v-icon>
+              <v-badge v-else color="error" dot>
                 <v-icon>mdi-palette</v-icon>
               </v-badge>
             </v-btn>
             <v-btn icon variant="text" color="primary" @click="viewTable(layer.id)">
-              <v-badge color="error" dot>
+              <v-icon v-if="layer.features && layer.features?.length > 0">mdi-table</v-icon>
+              <v-badge v-else color="error" dot>
                 <v-icon>mdi-table</v-icon>
               </v-badge>
             </v-btn>

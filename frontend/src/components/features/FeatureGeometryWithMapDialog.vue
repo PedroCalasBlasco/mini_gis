@@ -9,7 +9,7 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn variant="text" @click="mapDialog = false">Cerrar</v-btn>
+        <v-btn variant="text" @click="close">Cerrar</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -23,8 +23,10 @@
   import { createLeafletControl } from '@/utils/leafletControl'
   import GeocodingControl from '@/components/widgets/geocodingControl/GeocodingControl.vue'
   import GoToActualPositionButton from '@/components/widgets/goToActualPositionButton/GoToActualPositionButton.vue'
-  import type { FeatureFromApi } from '@/types/feature'
+  import type { FeatureFromApi, Geometry } from '@/types/feature'
   import type { MapData } from '@/types/map'
+  import DrawPolilinesControl from '../widgets/drawPolilinesControl/DrawPolilinesControl.vue'
+  import DrawPolygonsControl from '../widgets/drawPolygonsControl/DrawPolygonsControl.vue'
 
   const props = defineProps<{
     mapDialog: boolean
@@ -91,7 +93,6 @@
     const type = feature.value.geometry?.type
 
     let layer: L.Layer | null = null
-    let tempCoords: [number, number][] = []
 
     if (type === 'Point' && feature.value.geometry?.coordinates?.length === 2) {
       const [lng, lat] = feature.value.geometry.coordinates
@@ -133,39 +134,6 @@
           f.id === feature.value.id ? { ...feature.value } : f
         )
       }
-
-      if (type === 'LineString') {
-        tempCoords.push([lng, lat])
-
-        if (layer && leafletMap) leafletMap.removeLayer(layer)
-
-        const latlngs: L.LatLngTuple[] = tempCoords.map(([lng, lat]) => [lat, lng])
-
-        if (leafletMap) {
-          layer = L.polyline(latlngs, { color: 'blue' }).addTo(leafletMap)
-        }
-
-        feature.value.geometry = {
-          type: 'LineString',
-          coordinates: [...tempCoords],
-        }
-      }
-
-      if (type === 'Polygon') {
-        tempCoords.push([lng, lat])
-        if (layer && leafletMap) leafletMap.removeLayer(layer)
-
-        const latlngs: L.LatLngTuple[] = tempCoords.map(([lng, lat]) => [lat, lng])
-
-        if (leafletMap) {
-          layer = L.polygon([latlngs], { color: 'green' }).addTo(leafletMap)
-        }
-
-        feature.value.geometry = {
-          type: 'Polygon',
-          coordinates: [[...tempCoords]],
-        }
-      }
     })
 
     leafletMap.on('zoomend', () => {
@@ -186,6 +154,26 @@
       position: 'bottomright',
     })
     leafletMap.addControl(goToActualPosition)
+
+    if (type === 'LineString') {
+      const drawPolilines = new (createLeafletControl(
+        'custom-control',
+        DrawPolilinesControl,
+        leafletMap
+      ))({
+        position: 'topright',
+      })
+      leafletMap.addControl(drawPolilines)
+    } else if (type === 'Polygon') {
+      const drawPolygons = new (createLeafletControl(
+        'custom-control',
+        DrawPolygonsControl,
+        leafletMap
+      ))({
+        position: 'topright',
+      })
+      leafletMap.addControl(drawPolygons)
+    }
   }
 
   function updateBBox() {
@@ -198,6 +186,60 @@
         maxLng: bboxFromBounds.getEast(),
       }
     }
+  }
+
+  function extractCoordinatesFromLayer(
+    layer: L.Polyline | L.Polygon
+  ): [number, number][][] | [number, number][] {
+    if (layer instanceof L.Polygon) {
+      const rings = layer.getLatLngs()[0] as L.LatLng[]
+      return [rings.map(({ lat, lng }) => [lng, lat] as [number, number])]
+    }
+
+    if (layer instanceof L.Polyline) {
+      const points = layer.getLatLngs() as L.LatLng[]
+      return points.map(({ lat, lng }) => [lng, lat] as [number, number])
+    }
+
+    return []
+  }
+
+  function closeDrawingFeature() {
+    if (!leafletMap) return
+
+    const type = feature.value.geometry?.type
+    let lastLayer: L.Polyline | L.Polygon | undefined
+
+    leafletMap.eachLayer((layer) => {
+      if (type === 'LineString' && layer instanceof L.Polyline && !(layer instanceof L.Polygon)) {
+        lastLayer = layer
+      } else if (type === 'Polygon' && layer instanceof L.Polygon) {
+        lastLayer = layer
+      }
+    })
+
+    feature.value.geometry = {
+      type,
+      coordinates: lastLayer
+        ? extractCoordinatesFromLayer(lastLayer)
+        : type === 'Polygon'
+          ? [[]]
+          : [],
+    } as Geometry
+
+    features.value = features.value.map((f) =>
+      f.id === feature.value.id ? { ...feature.value } : f
+    )
+
+    leafletMap.remove()
+  }
+
+  function close() {
+    if (['LineString', 'Polygon'].includes(feature.value.geometry?.type)) {
+      closeDrawingFeature()
+      leafletMap = null
+    }
+    mapDialog.value = false
   }
 </script>
 

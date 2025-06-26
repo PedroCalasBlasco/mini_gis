@@ -103,10 +103,28 @@
 
   const selectedFeature = ref<FeatureFromApi>()
 
-  function formatedCoords(geometry: Geometry) {
+  function formatedCoords(geometry: Geometry): string {
     if (geometry.type === 'Point') {
-      return `${geometry.coordinates[0].toFixed(2)}  ${geometry.coordinates[1].toFixed(2)}`
+      const [lng, lat] = geometry.coordinates as [number, number]
+      return `${lng.toFixed(2)} ${lat.toFixed(2)}`
     }
+
+    if (geometry.type === 'LineString') {
+      const coords = geometry.coordinates as [number, number][]
+      const shown = coords.slice(0, 3)
+      const formatted = shown.map(([lng, lat]) => `(${lng.toFixed(2)}, ${lat.toFixed(2)})`)
+      return formatted.join(', ') + (coords.length > 3 ? ', …' : '')
+    }
+
+    if (geometry.type === 'Polygon') {
+      const rings = geometry.coordinates as [number, number][][]
+      const firstRing = rings[0] ?? []
+      const shown = firstRing.slice(0, 3)
+      const formatted = shown.map(([lng, lat]) => `(${lng.toFixed(2)}, ${lat.toFixed(2)})`)
+      return formatted.join(', ') + (firstRing.length > 3 ? ', …' : '')
+    }
+
+    return ''
   }
 
   const geolocateFeature = (feature: FeatureFromApi) => {

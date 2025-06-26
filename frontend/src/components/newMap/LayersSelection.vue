@@ -29,18 +29,18 @@
 
 <script lang="ts" setup>
   import { getLayersByUser } from '@/services/layers'
-  import type { Layer } from '@/types/layer'
+  import type { LayerFromAPI } from '@/types/layer'
   import { useStorage } from '@vueuse/core'
   import { onMounted, ref, type Ref } from 'vue'
   import { useRoute } from 'vue-router'
   import { useVModel } from '@vueuse/core'
 
   const props = defineProps<{
-    selectedLayers?: Layer[]
+    selectedLayers?: LayerFromAPI[]
   }>()
 
   const emit = defineEmits<{
-    (e: 'update:selectedLayers', value: Layer[]): void
+    (e: 'update:selectedLayers', value: LayerFromAPI[]): void
   }>()
 
   const selectedLayers = useVModel(props, 'selectedLayers', emit)
@@ -49,7 +49,7 @@
 
   const token = useStorage('token', '')
 
-  const layers: Ref<Layer[]> = ref([])
+  const layers: Ref<LayerFromAPI[]> = ref([])
 
   onMounted(async () => {
     layers.value = await getLayersByUser(route.params.userId as string, token.value)
