@@ -88,7 +88,6 @@
       const fetchedUser = await getUserById(userId.value, token.value)
       userInitialData = cloneDeep(fetchedUser)
       user.value = cloneDeep(userInitialData)
-      console.log('Usuario:', userInitialData)
     } catch (error) {
       console.error('Error', error)
     }

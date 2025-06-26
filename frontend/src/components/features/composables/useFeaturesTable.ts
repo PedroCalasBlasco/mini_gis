@@ -29,8 +29,6 @@ export function useFeaturesTable(props: { features: FeatureFromApi[] }) {
   const headers = computed(() => {
     if (!features.value.length) return baseHeaders.value
 
-    console.log('properties', features.value[0].properties)
-
     const properties = features.value[0].properties
     if (!properties) return baseHeaders.value
 

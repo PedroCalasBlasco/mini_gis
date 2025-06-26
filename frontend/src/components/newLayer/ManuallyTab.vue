@@ -35,7 +35,7 @@
         :disabled="props.isDisabled"
         hide-details
         variant="outlined"
-        :items="['Point', 'Line', 'Polygon']"
+        :items="['Point', 'LineString', 'Polygon']"
         label="Geometry Type"
         required
       />

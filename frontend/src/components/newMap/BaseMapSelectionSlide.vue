@@ -70,6 +70,5 @@
 
   onMounted(async () => {
     baseMaps.value = await getBaseMaps(token.value)
-    console.log('MAPS', baseMaps.value)
   })
 </script>

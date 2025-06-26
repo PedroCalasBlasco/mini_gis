@@ -11,12 +11,7 @@
               :elevation="isHovering ? 12 : 4"
               @click="selectMap(map)"
             >
-              <v-img
-                :src="`https://placehold.co/400x200/orange/white?text=${map.name}`"
-                height="200px"
-                class="map-img"
-                cover
-              >
+              <v-img :src="thumbnail(map)" height="200px" class="map-img" cover>
                 <template #placeholder>
                   <v-row class="fill-height ma-0 align-center justify-center">
                     <v-progress-circular indeterminate color="grey-lighten-5" />
@@ -56,12 +51,14 @@
 
 <script lang="ts" setup>
   import { useStorage } from '@vueuse/core'
-  import { ref } from 'vue'
+  import { onMounted, ref, type Ref } from 'vue'
   import type { MapFromAPI } from '@/types/map'
   import { useVModel } from '@vueuse/core'
 
   import DeleteMapDialog from '@/components/dashboard/DeleteMapDialog.vue'
   import router from '@/router'
+  import { getBaseMaps } from '@/services/baseMap'
+  import type { BaseMap } from '@/types/baseMap'
 
   const props = defineProps<{
     title: string
@@ -73,12 +70,21 @@
     (e: 'refreshMap'): void
   }>()
 
+  const token = useStorage('token', '')
+
   const maps = useVModel(props, 'maps', emit)
 
   const userId = useStorage('userId', '')
 
   const deleteDialog = ref(false)
   const mapToDelete = ref<MapFromAPI | undefined>(undefined)
+
+  function thumbnail(map: MapFromAPI) {
+    const baseMap = baseMaps.value.find((bp) => bp.id === map.baseMapId)
+    return baseMap?.thumbnailUrl
+      ? baseMap.thumbnailUrl
+      : `https://placehold.co/400x200/orange/white?text=${map.name}`
+  }
 
   function openDeleteDialog(map: MapFromAPI) {
     mapToDelete.value = map
@@ -100,6 +106,12 @@
   async function refresh() {
     emit('refreshMap')
   }
+
+  const baseMaps: Ref<BaseMap[]> = ref([])
+
+  onMounted(async () => {
+    baseMaps.value = await getBaseMaps(token.value)
+  })
 </script>
 
 <style scoped>

@@ -1,5 +1,5 @@
 import type { Widget } from './widget'
-import type { Layer } from './layer'
+import type { Layer, LayerFromAPI } from './layer'
 import type { BaseMap } from './baseMap'
 
 export interface MapData {
@@ -7,6 +7,12 @@ export interface MapData {
   centerLng: number
   zoom: number
   bbox: Bbox
+}
+
+export interface MapLayer {
+  layerId: number
+  mapId: number
+  layer: LayerFromAPI
 }
 
 export interface Map {
@@ -19,7 +25,7 @@ export interface Map {
   zoom: number
   bbox: Bbox
   baseMapId?: number
-  layers: Layer[]
+  mapLayers: MapLayer[]
   widgets: Widget[]
   baseMap?: BaseMap
 }

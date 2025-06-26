@@ -5,6 +5,7 @@
         <!-- Header -->
         <v-card-title class="text-h5 px-6 py-4 d-flex align-center">
           Features Table
+          {{ layerFromApi?.name }}
           <v-spacer />
           <v-btn class="me-2" icon variant="text" @click="add">
             <v-icon>mdi-plus</v-icon>
@@ -109,8 +110,8 @@
   async function confirmChanges() {
     loading.value = true
     try {
-      if (features.value) {
-        await createFeatures(features.value, token.value)
+      if (features.value && layerFromApi.value) {
+        await createFeatures(features.value, token.value, layerFromApi.value.id)
         snackbar.openSnackbar('Features Changed Succesfully', 'success')
         originalFeatures.value = cloneDeep(features.value)
       }
